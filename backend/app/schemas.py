@@ -19,6 +19,32 @@ class ActionResult(BaseModel):
     ok: bool
     message: str
     entry: dict[str, Any] | None = None
+    issues: list[dict[str, Any]] = Field(default_factory=list)
+
+
+class ValidationIssue(BaseModel):
+    """一条校验问题：field 指向具体字段，fields 覆盖关联字段。"""
+
+    field: str
+    fields: list[str] = Field(default_factory=list)
+    message: str
+
+
+class ValidationRequest(BaseModel):
+    """提交校验/启用配置时随动作一起提交的字段。"""
+
+    values: dict[str, Any] = Field(default_factory=dict)
+
+
+class TaskBlocker(BaseModel):
+    """采集任务上的阻断条目，来源是一条网页抓取规则的校验问题。"""
+
+    规则编号: str | None = None
+    关联任务: str | None = None
+    阻断状态: str | None = None
+    字段: str | None = None
+    涉及字段: list[str] = Field(default_factory=list)
+    阻断原因: str | None = None
 
 
 class EntryPayload(BaseModel):
